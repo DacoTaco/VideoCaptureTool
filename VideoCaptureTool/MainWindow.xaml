@@ -3,6 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="DacoTaco's Video Capture Tool" Height="600" Width="840" Loaded="Window_Loaded" Closing="Window_Closing">
     <DockPanel Name="dockpanel">
+        <Menu DockPanel.Dock="Top" Height="24" Name="Menubar">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open Device" Name="OpenDeviceMenu" Click="OpenDevice_Click" IsEnabled="{Binding DevicesClosed}"></MenuItem>
+                <MenuItem Header="_Close Device" Name="CloseDeviceMenu" Click="CloseDevice_Click" IsEnabled="{Binding DevicesOpen}"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Clos_e" Name="ExitMenuItem" Click="ExitMenuItem_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="Keep _Aspect Ratio " IsCheckable="True" IsChecked="{Binding KeepAspectRatio}"></MenuItem>
+            </MenuItem>
+        </Menu>
         <StatusBar DockPanel.Dock="Bottom" Height="30">
             <Label>FPS : </Label>
             <Label Name="lblFPS" Content="{Binding Frames}" Width="50"></Label>
@@ -13,9 +24,6 @@
             <Label>Audio Format :</Label>
             <Label Content="{Binding Path=AudioFormat}"></Label>
         </StatusBar>
-        <Menu DockPanel.Dock="Top" Height="24">
-            <!--<MenuItem Header="File"></MenuItem>-->
-        </Menu>
         <Grid Name="mainGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"></ColumnDefinition>

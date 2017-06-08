@@ -16,6 +16,8 @@ namespace VideoCaptureTool
     {
         public string DeviceName { get; set; }
         public int Channels { get; set; }
+        public int SampleRate { get; set; }
+        public int BitRate { get; set; }
 
         public override string ToString()
         {
@@ -100,6 +102,139 @@ namespace VideoCaptureTool
             WaveProvider.AddSamples(e.Buffer, 0, e.BytesRecorded);
         }
 
+        public AudioDevice GetBestCapability(WaveInCapabilities device)
+        {
+            int sampleRate = 44100;
+            int bitrate = 16;
+
+            if (device.Channels == 1)
+            {
+                //mono
+                if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_96M16))
+                {
+                    bitrate = 16;
+                    sampleRate = 96000;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_96M08))
+                {
+                    bitrate = 8;
+                    sampleRate = 96000;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_48M16))
+                {
+                    bitrate = 16;
+                    sampleRate = 48000;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_48M08))
+                {
+                    bitrate = 8;
+                    sampleRate = 48000;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_4M16))
+                {
+                    bitrate = 16;
+                    sampleRate = 44100;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_4M08))
+                {
+                    bitrate = 8;
+                    sampleRate = 44100;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_2M16))
+                {
+                    bitrate = 16;
+                    sampleRate = 22050;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_2M08))
+                {
+                    bitrate = 8;
+                    sampleRate = 22050;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_1M16))
+                {
+                    bitrate = 16;
+                    sampleRate = 11025;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_1M08))
+                {
+                    bitrate = 8;
+                    sampleRate = 11025;
+                }
+                else
+                {
+                    bitrate = 0;
+                    sampleRate = 0;
+                }
+            }
+            else
+            {
+                //stereo
+                /*SupportedWaveFormat[] formats = new SupportedWaveFormat[] { SupportedWaveFormat.WAVE_FORMAT_1S08, SupportedWaveFormat.WAVE_FORMAT_1S16, 
+                                                                            SupportedWaveFormat.WAVE_FORMAT_2S08, SupportedWaveFormat.WAVE_FORMAT_2S16,
+                                                                            SupportedWaveFormat.WAVE_FORMAT_4S08, SupportedWaveFormat.WAVE_FORMAT_4S16,
+                                                                            SupportedWaveFormat.WAVE_FORMAT_48S08, SupportedWaveFormat.WAVE_FORMAT_48S16,
+                                                                            SupportedWaveFormat.WAVE_FORMAT_96S08, SupportedWaveFormat.WAVE_FORMAT_96S16};*/
+                if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_96S16))
+                {
+                    bitrate = 16;
+                    sampleRate = 96000;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_96S08))
+                {
+                    bitrate = 8;
+                    sampleRate = 96000;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_48S16))
+                {
+                    bitrate = 16;
+                    sampleRate = 48000;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_48S08))
+                {
+                    bitrate = 8;
+                    sampleRate = 48000;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_4S16))
+                {
+                    bitrate = 16;
+                    sampleRate = 44100;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_4S08))
+                {
+                    bitrate = 8;
+                    sampleRate = 44100;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_2S16))
+                {
+                    bitrate = 16;
+                    sampleRate = 22050;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_2S08))
+                {
+                    bitrate = 8;
+                    sampleRate = 22050;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_1S16))
+                {
+                    bitrate = 16;
+                    sampleRate = 11025;
+                }
+                else if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_1S08))
+                {
+                    bitrate = 8;
+                    sampleRate = 11025;
+                }
+                else
+                {
+                    bitrate = 0;
+                    sampleRate = 0;
+                }
+            }
+
+            return new AudioDevice() { BitRate = bitrate, SampleRate = sampleRate, Channels = device.Channels, DeviceName = device.ProductName };
+
+        }
+
         public AudioPlayer()
         {
             List<NAudio.Wave.WaveInCapabilities> devices = new List<NAudio.Wave.WaveInCapabilities>();
@@ -113,7 +248,11 @@ namespace VideoCaptureTool
             //each device gets inserted into the devices list, which is linked to the listdevices listview module
             foreach (var device in devices)
             {
-                AudioDevices.Add(new AudioDevice() { DeviceName = device.ProductName, Channels = device.Channels });
+                AudioDevice newDevice = GetBestCapability(device);
+                if (newDevice != null)
+                {
+                    AudioDevices.Add(newDevice);
+                } 
             }
 
             output = new WaveOut();
@@ -126,7 +265,14 @@ namespace VideoCaptureTool
                 input.DataAvailable += new EventHandler<WaveInEventArgs>(input_DataAvailable);
                 input.DeviceNumber = AudioIndex;
 
-                input.WaveFormat = new WaveFormat(44100, device.Channels);
+                WaveFormat format = null;
+
+                if (device.BitRate != 0 && device.SampleRate != 0)
+                {
+                    format = new WaveFormat(device.SampleRate, device.BitRate, device.Channels);
+                    input.WaveFormat = format;
+                }
+                
                 WaveProvider = new BufferedWaveProvider(input.WaveFormat);
                 
                 //WaveProvider.DiscardOnBufferOverflow = true;
@@ -148,15 +294,22 @@ namespace VideoCaptureTool
         }
         public void Stop()
         {
-            input.StopRecording();
-            input.Dispose();
-            output.Stop();
-            output.Dispose();
-            volumeHandler.ToSampleProvider().Skip(TimeSpan.FromSeconds(5));
-            WaveProvider.ClearBuffer();
-            WaveProvider = null;
-            output = new WaveOut();
-            input = new WaveIn();
+            if (input != null)
+            {
+                input.StopRecording();
+                input.Dispose();
+                input = new WaveIn();
+            }
+            if (output != null && output.PlaybackState != PlaybackState.Stopped)
+            {
+                output.Stop();
+                output.Dispose();
+                volumeHandler.ToSampleProvider().Skip(TimeSpan.FromSeconds(5));
+                WaveProvider.ClearBuffer();
+                WaveProvider = null;
+                output = new WaveOut();
+
+            }
             DeviceOpen = false;
         }
         /// <summary>

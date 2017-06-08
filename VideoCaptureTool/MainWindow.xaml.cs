@@ -24,6 +24,34 @@ namespace VideoCaptureTool
             }
         }
 
+        public bool DevicesOpen 
+        {
+            get
+            {
+                if(
+                    (videoPlayer != null && videoPlayer.DeviceOpen == true) &&
+                    (audioPlayer != null && audioPlayer.DeviceOpen == true)
+                    )
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+        public bool DevicesClosed
+        {
+            get
+            {
+                if (
+                    (videoPlayer != null && videoPlayer.DeviceOpen == false) &&
+                    (audioPlayer != null && audioPlayer.DeviceOpen == false)
+                    )
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
         public bool EnableControls
         {
             get
@@ -32,6 +60,25 @@ namespace VideoCaptureTool
                     return true;
                 else
                     return false;
+            }
+        }
+
+        public bool KeepAspectRatio
+        {
+            get
+            {
+                if (frameWindow.Stretch != System.Windows.Media.Stretch.None && frameWindow.Stretch != System.Windows.Media.Stretch.Uniform)
+                    return false;
+                return true;
+            }
+            set
+            {
+                if (value == true)
+                {
+                    frameWindow.Stretch = System.Windows.Media.Stretch.Uniform;
+                }
+                else
+                    frameWindow.Stretch = System.Windows.Media.Stretch.Fill;
             }
         }
 
@@ -95,6 +142,7 @@ namespace VideoCaptureTool
             grdControls.DataContext = this;
             Controls.DataContext = videoPlayer;
             slVolume.DataContext = audioPlayer;
+            Menubar.DataContext = this;
 
 
             fpsTimer.Tick += fpsTimer_Tick;
@@ -103,12 +151,37 @@ namespace VideoCaptureTool
             videoPlayer.PropertyChanged += videoPlayer_PropertyChanged;
         }
 
+        private void OpenDevices()
+        {
+            audioPlayer.Start(ListAudioDevices.SelectedIndex, (AudioDevice)ListAudioDevices.SelectedItem);
+            videoPlayer.Start(ListDevices.SelectedIndex);
+            fpsTimer.Start();
+            NotifyPropertyChanged("AudioFormat");
+        }
+        private void CloseDevices()
+        {
+            audioPlayer.Stop();
+            videoPlayer.Stop();
+            fpsTimer.Stop();
+            NotifyPropertyChanged("AudioFormat");
+        }
+        private void ExitApplication()
+        {
+            CloseDevices();
+            Application.Current.Shutdown(0);
+        }
+
         void videoPlayer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "VideoFrame")
             {
                 framesDrawn++;
                 NotifyPropertyChanged("FrameResolution");
+            }
+            if (e.PropertyName == "DeviceOpen" || e.PropertyName == "DeviceClosed")
+            {
+                NotifyPropertyChanged("DevicesOpen");
+                NotifyPropertyChanged("DevicesClosed");
             }
         }
 
@@ -155,18 +228,11 @@ namespace VideoCaptureTool
 
         private void btnCloseDevice_Click(object sender, RoutedEventArgs e)
         {
-            videoPlayer.Stop();
-            audioPlayer.Stop();
-            fpsTimer.Stop();
-            NotifyPropertyChanged("AudioFormat");
+            CloseDevices();
         }
-
         private void btnOpenDevice_Click(object sender, RoutedEventArgs e)
         {
-            videoPlayer.Start(ListDevices.SelectedIndex);
-            audioPlayer.Start(ListAudioDevices.SelectedIndex,(AudioDevice)ListAudioDevices.SelectedItem);
-            fpsTimer.Start();
-            NotifyPropertyChanged("AudioFormat");
+            OpenDevices();
         }
 
         private void btnRecord_Click(object sender, RoutedEventArgs e)
@@ -180,6 +246,20 @@ namespace VideoCaptureTool
             {
                 videoPlayer.StopRecording();
             }
+        }
+
+        private void OpenDevice_Click(object sender, RoutedEventArgs e)
+        {
+            OpenDevices();
+        }
+        private void CloseDevice_Click(object sender, RoutedEventArgs e)
+        {
+            CloseDevices();
+        }
+
+        private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ExitApplication();
         }
     }
 }
