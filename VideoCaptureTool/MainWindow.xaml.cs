@@ -119,6 +119,19 @@ namespace VideoCaptureTool
                 NotifyPropertyChanged("AllowStandby");
             }
         }
+        public bool ResizeFrame
+        {
+            get
+            {
+                return appSettings.ResizeFrame;
+            }
+            set
+            {
+                appSettings.ResizeFrame = value;
+                videoPlayer.ResizeFrame = value;
+                NotifyPropertyChanged("ResizeFrame");
+            }
+        }
 
         int framesDrawn = 0;
         public string Frames
@@ -218,6 +231,10 @@ namespace VideoCaptureTool
             CloseDevices();
             Application.Current.Shutdown(0);
         }
+        private void OpenVideoProperties()
+        {
+            videoPlayer.OpenDeviceProperties(ListDevices.SelectedIndex, new WindowInteropHelper(this).Handle);
+        }
 
         void videoPlayer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -269,9 +286,9 @@ namespace VideoCaptureTool
                 MessageBox.Show("failed loading image");
         }
 
-        private void Properties_Click(object sender, RoutedEventArgs e)
+        private void VideoProperties_Click(object sender, RoutedEventArgs e)
         {
-            videoPlayer.OpenDeviceProperties(ListDevices.SelectedIndex, new WindowInteropHelper(this).Handle);
+            OpenVideoProperties();
         }
         private void SaveImage_Click(object sender, RoutedEventArgs e)
         {
@@ -322,6 +339,22 @@ namespace VideoCaptureTool
         private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ExitApplication();
+        }
+
+        private void RefreshDevicesMenu_Click(object sender, RoutedEventArgs e)
+        {
+            videoPlayer.DetectDevices();
+            audioPlayer.DetectDevices();
+
+            ListDevices.ItemsSource = videoPlayer.VideoDevices;
+            if (ListDevices.SelectedIndex == -1 && ListDevices.Items.Count > 0)
+                ListDevices.SelectedIndex = 0;
+
+            ListAudioDevices.ItemsSource = audioPlayer.AudioDevices;
+            if (ListAudioDevices.SelectedIndex == -1 && ListAudioDevices.Items.Count > 0)
+                ListAudioDevices.SelectedIndex = 0;
+
+            NotifyPropertyChanged("EnableControls");
         }
     }
 }

@@ -38,7 +38,7 @@ namespace VideoCaptureTool
         }
         private WaveIn input = null;
         private WaveOut output = null;
-        public ObservableCollection<AudioDevice> AudioDevices = new ObservableCollection<AudioDevice>();
+        public ObservableCollection<AudioDevice> AudioDevices;
         private BufferedWaveProvider WaveProvider;
         VolumeWaveProvider16 volumeHandler;
 
@@ -237,6 +237,16 @@ namespace VideoCaptureTool
 
         public AudioPlayer()
         {
+
+            DetectDevices();
+
+            output = new WaveOut();
+            input = new WaveIn();
+        }
+
+        public void DetectDevices()
+        {
+            AudioDevices = new ObservableCollection<AudioDevice>();
             List<NAudio.Wave.WaveInCapabilities> devices = new List<NAudio.Wave.WaveInCapabilities>();
 
             //gets the input (wavein) devices and adds them to the list
@@ -252,12 +262,10 @@ namespace VideoCaptureTool
                 if (newDevice != null)
                 {
                     AudioDevices.Add(newDevice);
-                } 
+                }
             }
-
-            output = new WaveOut();
-            input = new WaveIn();
         }
+
         public void Start(int AudioIndex, AudioDevice device)
         {
             if (AudioIndex != -1)
@@ -320,6 +328,11 @@ namespace VideoCaptureTool
         public WaveFormat GetWaveFormat()
         {
             return WaveProvider.WaveFormat;
+        }
+
+        public void OpenDeviceProperties(int index, IntPtr ParentHandle)
+        {
+
         }
     }
 }

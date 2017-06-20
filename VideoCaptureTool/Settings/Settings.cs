@@ -41,6 +41,14 @@ namespace VideoCaptureTool.Settings
                 SaveSettings();
             }
         }
+
+        private Boolean resizeFrame = false;
+        public Boolean ResizeFrame
+        {
+            get { return resizeFrame; }
+            set { resizeFrame = value; }
+        }
+        
         
         
     }

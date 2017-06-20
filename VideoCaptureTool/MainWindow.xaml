@@ -7,6 +7,7 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_Open Device" Name="OpenDeviceMenu" Click="OpenDevice_Click" IsEnabled="{Binding DevicesClosed}"></MenuItem>
                 <MenuItem Header="_Close Device" Name="CloseDeviceMenu" Click="CloseDevice_Click" IsEnabled="{Binding DevicesOpen}"></MenuItem>
+                <MenuItem Header="_Refresh Devices" Name="RefreshDevicesMenu" Click="RefreshDevicesMenu_Click" IsEnabled="{Binding DevicesClosed}"></MenuItem>
                 <Separator></Separator>
                 <MenuItem Header="Clos_e" Name="ExitMenuItem" Click="ExitMenuItem_Click"></MenuItem>
             </MenuItem>
@@ -16,6 +17,7 @@
             <MenuItem Header="_Settings">
                 <MenuItem Header="Allow _Standby" IsCheckable="True" IsChecked="{Binding AllowStandby}"></MenuItem>
                 <MenuItem Header="Keep _Aspect Ratio " IsCheckable="True" IsChecked="{Binding KeepAspectRatio}"></MenuItem>
+                <MenuItem Header="_Resize Frame" IsCheckable="True" IsChecked="{Binding ResizeFrame}"></MenuItem>
             </MenuItem>
             
         </Menu>
@@ -64,7 +66,7 @@
                     <ToggleButton Name="btnRecord" IsEnabled="{Binding DeviceOpen}" Click="btnRecord_Click">Record!</ToggleButton>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="0,10,0,0" />
 
-                    <Button Click="Properties_Click" Name="btnProperties" IsEnabled="{Binding DeviceOpen}">Video Properties</Button>
+                    <Button Click="VideoProperties_Click" Name="btnProperties" IsEnabled="{Binding DeviceOpen}">Video Properties</Button>
                     <Button Click="SaveImage_Click" Name="btnSaveImage" IsEnabled="{Binding DeviceOpen}">Save Image</Button>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="0,10,0,0" />
 
