@@ -102,6 +102,9 @@
     </ApplicationDefinition>
     <Compile Include="AudioPlayer.cs" />
     <Compile Include="BitmapTools.cs" />
+    <Compile Include="Settings\BaseSettings.cs" />
+    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="SystemCalls.cs" />
     <Compile Include="VideoPlayer.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

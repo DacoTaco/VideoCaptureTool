@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using System.Windows.Interop;
 using System.Windows.Controls.Primitives;
 using NAudio.Wave;
+using System.Runtime.InteropServices;
 
 namespace VideoCaptureTool
 {
@@ -15,7 +16,6 @@ namespace VideoCaptureTool
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
         private void NotifyPropertyChanged(String propertyName = "")
         {
             if (PropertyChanged != null)
@@ -24,6 +24,14 @@ namespace VideoCaptureTool
             }
         }
 
+        public Settings.SettingsManager appSettings
+        {
+            get
+            {
+                Settings.SettingsManager ret = Settings.SettingsManager.GetSettings();
+                return ret;
+            }
+        }
         public bool DevicesOpen 
         {
             get
@@ -67,18 +75,48 @@ namespace VideoCaptureTool
         {
             get
             {
-                if (frameWindow.Stretch != System.Windows.Media.Stretch.None && frameWindow.Stretch != System.Windows.Media.Stretch.Uniform)
-                    return false;
-                return true;
+                return appSettings.KeepAspectRatio;
             }
             set
             {
                 if (value == true)
                 {
+                    if(appSettings.KeepAspectRatio == false)
+                        appSettings.KeepAspectRatio = true;
                     frameWindow.Stretch = System.Windows.Media.Stretch.Uniform;
                 }
                 else
+                {
+                    if (appSettings.KeepAspectRatio == true)
+                        appSettings.KeepAspectRatio = false;
                     frameWindow.Stretch = System.Windows.Media.Stretch.Fill;
+                }
+                NotifyPropertyChanged("KeepAspectRatio");
+            }
+        }
+        public bool AllowStandby
+        {
+            get
+            {
+                return appSettings.AllowStandby;
+            }
+            set
+            {
+                if (value == true)
+                {
+                    appSettings.AllowStandby = true;
+                    SetThreadState(false);
+                }
+                else
+                {
+                    appSettings.AllowStandby = false;
+                    if (DevicesOpen == true)
+                    {
+                        //if the devices are open, set the thread state. normally, when devices open or close, we handle it in the event handler
+                        SetThreadState(true);
+                    }
+                }
+                NotifyPropertyChanged("AllowStandby");
             }
         }
 
@@ -90,7 +128,6 @@ namespace VideoCaptureTool
                 return framesDrawn.ToString();
             }
         }
-
         public string FrameResolution
         {
             get
@@ -137,6 +174,9 @@ namespace VideoCaptureTool
             if (ListAudioDevices.SelectedIndex == -1 && ListAudioDevices.Items.Count > 0)
                 ListAudioDevices.SelectedIndex = 0;
 
+            //this might look useless, but it'll trigger the setting of the fill or not
+            KeepAspectRatio = KeepAspectRatio;
+
             mainGrid.DataContext = videoPlayer;
             dockpanel.DataContext = this;
             grdControls.DataContext = this;
@@ -156,6 +196,13 @@ namespace VideoCaptureTool
             audioPlayer.Start(ListAudioDevices.SelectedIndex, (AudioDevice)ListAudioDevices.SelectedItem);
             videoPlayer.Start(ListDevices.SelectedIndex);
             fpsTimer.Start();
+
+            //the device is open. set thread!
+            if (!appSettings.AllowStandby)
+            {
+                SetThreadState(true);
+            }
+
             NotifyPropertyChanged("AudioFormat");
         }
         private void CloseDevices()
@@ -163,6 +210,7 @@ namespace VideoCaptureTool
             audioPlayer.Stop();
             videoPlayer.Stop();
             fpsTimer.Stop();
+            SetThreadState(false);
             NotifyPropertyChanged("AudioFormat");
         }
         private void ExitApplication()
@@ -185,6 +233,18 @@ namespace VideoCaptureTool
             }
         }
 
+        private void SetThreadState(bool active)
+        {
+            if(active == true)
+            {
+                WindowsAPI.SetThreadExecutionState(WindowsAPI.EXECUTION_STATE.ES_CONTINUOUS | WindowsAPI.EXECUTION_STATE.ES_DISPLAY_REQUIRED | WindowsAPI.EXECUTION_STATE.ES_AWAYMODE_REQUIRED);
+            }
+            else
+            {
+                WindowsAPI.SetThreadExecutionState(WindowsAPI.EXECUTION_STATE.ES_CONTINUOUS);
+            }
+        }
+
         void fpsTimer_Tick(object sender, EventArgs e)
         {
             NotifyPropertyChanged("Frames");
@@ -196,6 +256,8 @@ namespace VideoCaptureTool
             fpsTimer.Stop();
             if(videoPlayer.DeviceOpen)
                 videoPlayer.Stop();
+            if (audioPlayer.DeviceOpen)
+                audioPlayer.Stop();
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {

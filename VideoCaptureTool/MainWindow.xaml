@@ -13,6 +13,11 @@
             <MenuItem Header="_View">
                 <MenuItem Header="Keep _Aspect Ratio " IsCheckable="True" IsChecked="{Binding KeepAspectRatio}"></MenuItem>
             </MenuItem>
+            <MenuItem Header="_Settings">
+                <MenuItem Header="Allow _Standby" IsCheckable="True" IsChecked="{Binding AllowStandby}"></MenuItem>
+                <MenuItem Header="Keep _Aspect Ratio " IsCheckable="True" IsChecked="{Binding KeepAspectRatio}"></MenuItem>
+            </MenuItem>
+            
         </Menu>
         <StatusBar DockPanel.Dock="Bottom" Height="30">
             <Label>FPS : </Label>
@@ -34,8 +39,11 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Image Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Name="frameWindow" Source="{Binding Path=VideoFrame}" Stretch="Fill">
-            </Image>
+            <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Background="Black">
+                <Image Name="frameWindow" Source="{Binding Path=VideoFrame}">
+                </Image>
+            </Grid>
+            
 
             <Grid Name="grdControls" IsEnabled="{Binding Path=EnableControls}">
                 <StackPanel Name="Controls" Grid.Column="0" Grid.Row="0" Orientation="Vertical" Margin="10">
