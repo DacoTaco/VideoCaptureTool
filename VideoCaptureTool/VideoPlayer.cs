@@ -217,7 +217,6 @@ namespace VideoCaptureTool
                 VideoSource.NewFrame += video_NewFrame;
                 VideoSource.Start();
                 DeviceOpen = true;
-
             }
         }
 

@@ -8,16 +8,9 @@ namespace VideoCaptureTool.Settings
 {
     public sealed class SettingsManager : BaseSettings<SettingsManager>
     {
-        public SettingsManager()
+        public SettingsManager() : base("VCT")
         {
 
-        }
-
-        private string appname;
-        public string AppName
-        {
-            get { return "VCT"; }
-            set { return; }
         }
 
         private Boolean keepAspectRatio = true;

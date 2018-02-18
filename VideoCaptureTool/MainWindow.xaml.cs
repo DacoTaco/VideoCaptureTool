@@ -32,6 +32,16 @@ namespace VideoCaptureTool
                 return ret;
             }
         }
+        public bool EnableOpen 
+        {
+            get
+            {
+                if (DevicesOpen || videoPlayer.VideoDevices.Count <= 0)
+                    return false;
+
+                return true;
+            }
+        }
         public bool DevicesOpen 
         {
             get
@@ -51,9 +61,10 @@ namespace VideoCaptureTool
             get
             {
                 if (
-                    (videoPlayer != null && videoPlayer.DeviceOpen == false) &&
-                    (audioPlayer != null && audioPlayer.DeviceOpen == false)
-                    )
+                        ( (videoPlayer != null && videoPlayer.DeviceOpen == false) &&
+                            (audioPlayer != null && audioPlayer.DeviceOpen == false)
+                        ) 
+                   )
                 {
                     return true;
                 }
@@ -141,6 +152,7 @@ namespace VideoCaptureTool
                 return framesDrawn.ToString();
             }
         }
+
         public string FrameResolution
         {
             get
@@ -172,6 +184,7 @@ namespace VideoCaptureTool
         }
 
         DispatcherTimer fpsTimer = new DispatcherTimer();
+
         VideoPlayer videoPlayer = new VideoPlayer();
         AudioPlayer audioPlayer = new AudioPlayer();
 
@@ -247,6 +260,7 @@ namespace VideoCaptureTool
             {
                 NotifyPropertyChanged("DevicesOpen");
                 NotifyPropertyChanged("DevicesClosed");
+                NotifyPropertyChanged("EnableOpen");
             }
         }
 
@@ -355,6 +369,7 @@ namespace VideoCaptureTool
                 ListAudioDevices.SelectedIndex = 0;
 
             NotifyPropertyChanged("EnableControls");
+            NotifyPropertyChanged("EnableOpen");
         }
     }
 }

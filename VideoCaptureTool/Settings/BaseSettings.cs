@@ -53,11 +53,23 @@ namespace VideoCaptureTool.Settings
             }
         }
 
+        private string appname;
+        public string AppName
+        {
+            get { return appname; }
+            set { return; }
+        }
+
         //-------------------------
         //Functions
         //-------------------------
-        protected BaseSettings()
+        protected BaseSettings(string appName)
         {
+            if (String.IsNullOrWhiteSpace(appName))
+            {
+                throw new ArgumentNullException("Settings : appName is Null");
+            }
+            AppName = appName;
         }
         public static SettingType GetSettings()
         {
@@ -101,11 +113,18 @@ namespace VideoCaptureTool.Settings
                         try
                         {
                             var loadedSettings = serializer.Deserialize(reader);
-                            Settings = Cast(loadedSettings, T);
+                            if (loadedSettings.GetType() == Settings.GetType())
+                                Settings = Cast(loadedSettings, T);
+                            else
+                            {
+                                throw new ArgumentException("Settings wrong type!");
+                            }
                         }
                         catch (Exception e)
                         {
+                            loadingSettings = false;
                             //error loading settings. we'll have to remake the file with the default settings :)
+                            fs.Close();
                             System.IO.File.Delete(filename);
                             SaveSettings();
                         }

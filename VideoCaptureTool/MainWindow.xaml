@@ -5,7 +5,7 @@
     <DockPanel Name="dockpanel">
         <Menu DockPanel.Dock="Top" Height="24" Name="Menubar">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open Device" Name="OpenDeviceMenu" Click="OpenDevice_Click" IsEnabled="{Binding DevicesClosed}"></MenuItem>
+                <MenuItem Header="_Open Device" Name="OpenDeviceMenu" Click="OpenDevice_Click" IsEnabled="{Binding EnableOpen}"></MenuItem>
                 <MenuItem Header="_Close Device" Name="CloseDeviceMenu" Click="CloseDevice_Click" IsEnabled="{Binding DevicesOpen}"></MenuItem>
                 <MenuItem Header="_Refresh Devices" Name="RefreshDevicesMenu" Click="RefreshDevicesMenu_Click" IsEnabled="{Binding DevicesClosed}"></MenuItem>
                 <Separator></Separator>
