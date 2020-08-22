@@ -53,12 +53,7 @@ namespace VideoCaptureTool.Settings
             }
         }
 
-        private string appname;
-        public string AppName
-        {
-            get { return appname; }
-            set { return; }
-        }
+        public string AppName { get; set; }
 
         //-------------------------
         //Functions
@@ -71,7 +66,7 @@ namespace VideoCaptureTool.Settings
             }
             AppName = appName;
         }
-        public static SettingType GetSettings()
+        static public SettingType GetSettings()
         {
             return Settings;
         }
@@ -140,7 +135,7 @@ namespace VideoCaptureTool.Settings
             loadingSettings = false;
             return;
         }
-        private static dynamic Cast(dynamic obj, Type castTo)
+        static private dynamic Cast(dynamic obj, Type castTo)
         {
             return Convert.ChangeType(obj, castTo);
         }

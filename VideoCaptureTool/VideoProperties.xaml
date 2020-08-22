@@ -1,0 +1,36 @@
+﻿<Window x:Class="VideoCaptureTool.VideoProperties"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VideoCaptureTool"
+        mc:Ignorable="d"
+        Title="VideoProperties" Height="153.75" Width="515.938" ResizeMode="NoResize">
+
+    <DockPanel>
+        <Grid DockPanel.Dock="Bottom" Margin="5">
+            <Button x:Name="bOk" HorizontalAlignment="Center" MinWidth="50" VerticalAlignment="Bottom" Click="bOk_Click">OK</Button>
+        </Grid>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">Video Mode :</Label>
+            <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center">Camera Properties :</Label>
+            
+            <ComboBox Grid.Column="1" Grid.Row="0" Name="cbVideoModes" HorizontalAlignment="Left" SelectionChanged="cbVideoModes_SelectionChanged" VerticalAlignment="Center" Width="344"/>
+            <Button Grid.Column="1" Grid.Row="1" Name="bDeviceProperties" HorizontalContentAlignment="Center"  VerticalAlignment="Center" HorizontalAlignment="Left" Width="106" Click="bDeviceProperties_Click">Open Properties</Button>
+
+
+        </Grid>
+
+    </DockPanel>
+</Window>

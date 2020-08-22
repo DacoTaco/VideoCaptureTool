@@ -1,14 +1,9 @@
 ﻿using NAudio.Wave;
-using NAudio;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
 using System.ComponentModel;
+using System.Linq;
 
 namespace VideoCaptureTool
 {
@@ -169,11 +164,6 @@ namespace VideoCaptureTool
             else
             {
                 //stereo
-                /*SupportedWaveFormat[] formats = new SupportedWaveFormat[] { SupportedWaveFormat.WAVE_FORMAT_1S08, SupportedWaveFormat.WAVE_FORMAT_1S16, 
-                                                                            SupportedWaveFormat.WAVE_FORMAT_2S08, SupportedWaveFormat.WAVE_FORMAT_2S16,
-                                                                            SupportedWaveFormat.WAVE_FORMAT_4S08, SupportedWaveFormat.WAVE_FORMAT_4S16,
-                                                                            SupportedWaveFormat.WAVE_FORMAT_48S08, SupportedWaveFormat.WAVE_FORMAT_48S16,
-                                                                            SupportedWaveFormat.WAVE_FORMAT_96S08, SupportedWaveFormat.WAVE_FORMAT_96S16};*/
                 if (device.SupportsWaveFormat(SupportedWaveFormat.WAVE_FORMAT_96S16))
                 {
                     bitrate = 16;

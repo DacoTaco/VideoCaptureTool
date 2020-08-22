@@ -7,6 +7,8 @@ using System.Windows.Interop;
 using System.Windows.Controls.Primitives;
 using NAudio.Wave;
 using System.Runtime.InteropServices;
+using System.Collections.ObjectModel;
+using Accord.Video.DirectShow;
 
 namespace VideoCaptureTool
 {
@@ -246,7 +248,8 @@ namespace VideoCaptureTool
         }
         private void OpenVideoProperties()
         {
-            videoPlayer.OpenDeviceProperties(ListDevices.SelectedIndex, new WindowInteropHelper(this).Handle);
+            var window = new VideoProperties(videoPlayer);
+            window.ShowDialog();
         }
 
         void videoPlayer_PropertyChanged(object sender, PropertyChangedEventArgs e)

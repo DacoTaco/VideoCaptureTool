@@ -28,7 +28,7 @@ namespace VideoCaptureTool
             }
         }
 
-        static public System.Drawing.Imaging.ImageFormat GetImageFormat(System.Drawing.Image img)
+        static public System.Drawing.Imaging.ImageFormat GetImageFormat(Image img)
         {
             if (img.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
                 return System.Drawing.Imaging.ImageFormat.Jpeg;

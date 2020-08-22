@@ -10,7 +10,7 @@ namespace VideoCaptureTool.Settings
     {
         public SettingsManager() : base("VCT")
         {
-
+            
         }
 
         private Boolean keepAspectRatio = true;
@@ -35,14 +35,6 @@ namespace VideoCaptureTool.Settings
             }
         }
 
-        private Boolean resizeFrame = false;
-        public Boolean ResizeFrame
-        {
-            get { return resizeFrame; }
-            set { resizeFrame = value; }
-        }
-        
-        
-        
+        public Boolean ResizeFrame { get; set; } 
     }
 }
